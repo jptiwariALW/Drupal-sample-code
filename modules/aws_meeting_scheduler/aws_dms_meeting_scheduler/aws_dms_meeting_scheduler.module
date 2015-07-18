@@ -1,0 +1,453 @@
+<?php
+/**
+ * @file
+ * Main Module file
+ */
+
+ /**
+ * This function is used to create menu to manage meeting
+ */
+function aws_dms_meeting_scheduler_menu() {
+  $items = array();
+  $items['admin/meeting_scheduler'] = array(
+    'title' => 'Manage Meeting',
+    'description' => 'Manage Meeting',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'meeting_list',
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/manage_meeting_admin.inc',
+  );
+  $items['admin/meeting_scheduler/add'] = array(
+    'title' => 'Add Meeting',
+    'description' => 'Add new meeting',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('admin_meeting_form'),
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/manage_meeting_admin.inc',
+  );
+  $items['admin/meeting_scheduler/%/edit'] = array(
+    'title' => 'Edit Meeting',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('admin_meeting_form', 2),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/manage_meeting_admin.inc',
+  );
+  $items['admin/meeting_scheduler/%/delete'] = array(
+    'title' => 'Delete Meeting',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('admin_deletemeeting_form', 2),
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/manage_meeting_admin.inc',
+  );
+  $items['admin/meeting_scheduler/%/meeting_request'] = array(
+    'title' => "Meeting's Request",
+    'page callback' => 'meeting_request_list',
+    'page arguments' => array(2),
+    'type' => MENU_NORMAL_ITEM,
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/manage_meeting_admin.inc',
+  );
+  $items['admin/meeting_scheduler/%/view_request'] = array(
+    'title' => 'View Request',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('meeting_request_view', 2),
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/manage_meeting_admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function aws_dms_meeting_scheduler_block_info() {
+  $blocks['meeting_scheduler'] = array(
+    // Name which will show in the block list.
+    'info' => t('Meeting Scheduler'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  $blocks['meeting_request'] = array(
+    // Name which will show in the block list.
+    'info' => t('Meeting Request'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function aws_dms_meeting_scheduler_block_view($delta='') {
+  switch ($delta) {
+    case 'meeting_scheduler':
+      drupal_add_js(drupal_get_path('module', 'aws_dms_meeting_scheduler') . '/js/jquery.ptTimeSelect.js');
+      drupal_add_js(drupal_get_path('module', 'aws_dms_meeting_scheduler') . '/js/pikaday.js', array('type' => 'file', 'scope' => 'footer'));
+      drupal_add_css(drupal_get_path('module', 'aws_dms_meeting_scheduler') . '/css/jquery.ptTimeSelect.css', array('type' => 'file', 'scope' => 'footer'));
+      drupal_add_css(drupal_get_path('module', 'aws_dms_meeting_scheduler') . '/css/jquery-ui.css', array('type' => 'file', 'scope' => 'footer'));
+      drupal_add_css(drupal_get_path('module', 'aws_dms_meeting_scheduler') . '/css/pikaday.css');
+      drupal_add_js(drupal_get_path('module', 'aws_dms_meeting_scheduler') . '/js/meeting_list.js', array('type' => 'file', 'scope' => 'footer'));
+      $block['subject'] = '';
+      $results = aws_dms_meeting_scheduler_meeting_content();
+      $items = array();
+	  $i = 1;
+	  $default_timezone = date_default_timezone();
+      foreach ($results as $result) {
+		if ((format_date($result->meeting_date, 'custom',"Y", $default_timezone)) == format_date($result->meeting_end_date , 'custom',"Y", $default_timezone)) {
+            if ((format_date($result->meeting_date, 'custom',"m",$default_timezone)) == format_date($result->meeting_end_date,  'custom',"m", $default_timezone)) {
+              $date =  format_date($result->meeting_date, 'custom', 'd', $default_timezone) . '-' . format_date($result->meeting_end_date,  'custom', 'd', $default_timezone) . " " . format_date($result->meeting_date, 'custom', 'M', $default_timezone) . ', ' . format_date($result->meeting_date, 'custom', 'Y', $default_timezone);
+            }
+            else {
+              $date = format_date($result->meeting_date,  'custom', "d M", $default_timezone) . '-' . format_date($result->meeting_end_date, 'custom', "d M", $default_timezone) . ', ' . format_date($result->meeting_date, 'custom', "Y", $default_timezone);
+            }
+        }
+        else {
+           $date =  format_date($result->meeting_date, 'custom',"d F Y", $default_timezone) . '-' . format_date($result->meeting_end_date, 'custom',"d F Y", $default_timezone);
+        }
+        $html = '<div id = "meeting_' . $i . '" name = "meeting_' . $result->mid . '" class="left">
+            <span class = "con_name">' . $result->name . '</span><br />';
+        $html .= '<div class = "con_address">';
+        if (($result->address1 != '') || ($result->address2 != ''))    {
+          $html .= '<span class = "con_add">' . $result->address1;
+          if ( $result->address2 != '' && $result->address1 != '') {
+            $html .= ', ';
+          }
+          $html .=  $result->address2 . '</span><br />';
+        }
+        if (($result->city != '')|| ($result->state != ''))    {
+          $html .= '<span class = "con_add">' . $result->city;
+          if ( $result->state != '' && $result->city != '') {
+            $html .= ', ';
+          }
+          $html .= $result->state . '</span><br />';
+        }
+        if (($result->zip_code != '') || ($result->country != ''))    {
+          $html .= '<span class = "con_add">' . $result->zip_code;
+          if ( $result->country != '' && $result->zip_code != '') {
+            $html .= ', ';
+          }
+          $html .= $result->country . '</span><br />';
+        }
+        $html .= '</div>';
+        $html .= '<span class = "con_desc">' . $result->description . '</span>
+            </div>
+            <div class="right"><span class = "conference_date">' . $date . '</span>
+              <span style="display:none;" class = "con_start_date">' . format_date($result->meeting_date, 'custom', "m/d/Y", $default_timezone) . '</span>
+              <span style="display:none;" class = "con_end_date">' . format_date($result->meeting_end_date, 'custom', "m/d/Y", $default_timezone) . '</span>
+              <span style="display:none;" class = "con_time_zone">' . get_time_zone($result->meeting_timezone, 'm/d/Y H:i') . '</span><br />
+              <span style="display:none;" class = "con_date">' . date("Y, m", $result->meeting_date) . '</span>
+              <a href="#edit-meeting-fieldset" class = "use-ajaxs">' . t('Book a meeting') . '</a>
+            </div>';
+        $items[] = array('data' => $html);
+		$i++;
+      }
+      if (empty($items)) {
+        $block['content'] = t('No record found');
+      }
+      else {
+        //Pass data through theme function.
+        $block['content'] = theme('item_list', array('items' => $items));
+      }
+      return $block;
+    case 'meeting_request':
+      $block['subject'] = t('Request A Meeting');
+      $block['content'] = drupal_get_form('request_meeting_block');
+      return $block;
+  }
+}
+
+/**
+ * Function to get meeting detail.
+ */
+function aws_dms_meeting_scheduler_meeting_content() {
+  $time = strtotime(get_time_zone(date_default_timezone_get(), 'Y-m-d') . ' 23:59:59');
+  //Retrieve meeting schedule data from database
+  $query = db_select('meeting_scheduler', 'ms')
+           ->fields('ms')
+           ->orderBy('meeting_date', 'ASC')
+           ->condition('meeting_end_date', $time , '>=')
+           ->execute();
+  return $query;
+}
+
+/**
+ * Display form to request for a meeting.
+ */
+function request_meeting_block($form) {
+  $form['#action'] = url(current_path(), array('query' => drupal_get_destination(), 'external' => FALSE));
+  $form['#id'] = 'request-meeting-form';
+  $form['#submit'][] = 'request_meeting_submit';
+  $form['meeting_fieldset'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Name',
+  );
+  $form['meeting_fieldset']['address1'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="address1">',
+    '#suffix' => '</div>',
+    '#markup' => '',
+  );
+  $form['meeting_fieldset']['address2'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="city">',
+    '#suffix' => '</div>',
+    '#markup' => '',
+  );
+  $form['meeting_fieldset']['address2'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="city">',
+    '#suffix' => '</div>',
+    '#markup' => '',
+  );
+  $form['meeting_fieldset']['conference_date'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div>'.t("Date: ").'<span id="conference_date"><span>',
+    '#suffix' => '</div>',
+    '#markup' => '',
+  );
+  $form['meeting_fieldset']['mid'] = array(
+    '#type' => 'hidden',
+    '#title' => t('mid'),
+    '#attributes' => array('id' => array('meeting_id')),
+    '#default_value' => '',
+  );
+  $form['meeting_fieldset']['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Name'),
+    '#maxlength' => '20',
+    '#size' => 15,
+    '#required' => TRUE,
+  );
+  $form['meeting_fieldset']['name_markup'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="conf_name_error" class = "custom_error">',
+    '#suffix' => '</div>',
+  );
+  $form['meeting_fieldset']['email'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Email'),
+    '#size' => 15,
+    '#required' => TRUE,
+  );
+  $form['meeting_fieldset']['email_markup'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<label id="meeting_email">',
+    '#suffix' => '</label>',
+  );
+  $form['meeting_fieldset']['company'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Company'),
+    '#size' => 15,
+    '#required' => TRUE,
+  );
+  $form['meeting_fieldset']['company_markup'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="conf_company_error" class = "custom_error">',
+    '#suffix' => '</div>',
+  );
+  $form['meeting_fieldset']['message'] = array(
+    '#type' => 'textarea',
+    '#title' => t('Message'),
+    '#size' => 15,
+    '#resizable' => FALSE,
+    '#required' => TRUE,
+  );
+  $form['meeting_fieldset'] ['preferred_date'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<label id="preferred_date" >' . t('Preferred Date<span title="This field is required." class="form-required">*</span>'),
+    '#suffix' => '</label>',
+  );
+  $form['meeting_fieldset']['Date'] = array(
+    '#type' => 'textfield',
+	'#title' => t('Date'),
+    '#size' => 15,
+    '#required' => TRUE,
+    '#attributes' => array(
+      'id' => t('datepicker'),
+      'autocomplete' => 'off',
+      'readonly' => 'readonly'
+    ),
+  );
+ $form['meeting_fieldset'] ['preferred_time'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<label id="preferred_date" >' . t('Preferred Time<span title="This field is required." class="form-required">*</span>'),
+    '#suffix' => '</label>',
+  );
+ $form['meeting_fieldset']['time'] = array(
+    '#type' => 'textfield',
+	'#title' => t('Time'),
+    '#size' => 15,
+    '#required' => TRUE,
+    '#attributes' => array('autocomplete' => 'off', 'readonly' => 'readonly'),
+  );
+  $form['meeting_fieldset']['start_date'] = array(
+    '#type' => 'hidden',
+     '#attributes' => array('id' => array('start_date')),
+    '#default_value' => '',
+  );
+  $form['meeting_fieldset']['end_date'] = array(
+    '#type' => 'hidden',
+    '#attributes' => array('id' => array('end_date')),
+    '#default_value' => '',
+  );
+  $form['meeting_fieldset']['time_zone'] = array(
+    '#type' => 'hidden',
+    '#title' => t('Time-Zone'),
+    '#attributes' => array('id' => array('meeting_time_zone')),
+    '#default_value' => '',
+  );
+  $form['meeting_fieldset']['hours_markup'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<label id="m_time" >',
+    '#suffix' => '</label>',
+  );
+  $form['meeting_fieldset'] ['meeting_time_markup'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="meeting_time"  class="error">',
+    '#suffix' => '</div>',
+  );
+  $form['#validate'][] = 'request_meeting_validate';
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Request A Meeting'),
+    '#attributes' => array('id' => array('book-a-meeting')),
+  );
+  return $form; 
+}
+
+/**
+ * This function is used to add custom validation in the form.
+ */
+function request_meeting_validate($form, &$form_state) {
+  if ((!valid_email_address($form_state['values']['email'])) && isset($form_state['values']['email'])) {
+    form_set_error('', t('The email address appears to be invalid.'));
+  }
+  $alnum = "/^[ '-]*[A-Za-z][A-Za-z0-9 '-]+$/";
+  $name = trim($form_state['values']['name']);
+  if ( (strlen(trim($name)) == 0 || !preg_match($alnum, $name))) {
+	form_set_error('submitted][first_name', t("Please enter a valid name"));
+  }
+}
+
+function get_conference_date($meeting_start_date, $meeting_end_date) {
+  if ((date("Y", $meeting_start_date)) == date("Y", $meeting_end_date)) {
+    if ((date("m", $meeting_start_date)) == date("m", $meeting_end_date)) {
+      $date =  date("d", $meeting_start_date) . '-' . date("d", $meeting_end_date) . " " . date("M", $meeting_start_date) . ', ' . date("Y", $meeting_start_date);
+    }
+    else {
+      $date = date("d M", $meeting_start_date) . '-' . date("d M", $meeting_end_date) . ', ' . date("Y", $meeting_start_date);
+    }
+  }
+  else {
+    $date =  date("d F Y", $meeting_start_date) . '-' . date("d F Y", $meeting_end_date);
+  }
+  return $date;
+}
+
+/**
+ * Function to submit visitor's meeting request and send mail.
+ */
+function request_meeting_submit($form, &$form_state) {
+  try {
+    $query = db_insert('meeting_request');
+    $query->fields(array(
+      'name' => $form_state['values']['name'],
+      'email' => $form_state['values']['email'],
+      'booking_date' => strtotime($form_state['values']['Date'] . ' ' . $form_state['values']['time']),
+      'company' => $form_state['values']['company'],
+      'mid' => $form_state['values']['mid'],
+      'request_created' => time(),
+      'request_updated' => '0',
+      'message' => $form_state['values']['message'],
+    ));
+    $query->execute();
+	$mid =$form_state['values']['mid'];
+	$result =$query = db_select('meeting_scheduler', 'ms')
+           ->fields('ms')
+            ->condition('mid', $mid , '=')
+           ->execute()->fetchObject();
+		   
+    $message .='<div style="width:500px; float:left;"><p style="width:100%; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:20px; color:#333; ">Thank you for your meeting request. We look forward to meeting up and discussing opportunities together. Your email has landed in our inbox and we will come back with any questions or changes prior to our meeting.</p>';
+    $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; ">Happy travels</p>';
+    $message .='<div style="width:50%; float:left; font-family:Arial, Helvetica, sans-serif; font-size:12px;"> 
+    <p style="color:#333; padding:0px; margin:0px;">AWS DMS – Destination Management System</p>
+    <p style="color:#333; padding:0px; margin:0px;">Email: <a href="mailto:awsdms@anylinuxwork.in" style="color:#00F;">awsdms@anylinuxwork.in</a></p>
+    <p style="color:#333; padding:0px; margin:0px;"><a href="http://www.awsdms.anylinuxwork.in">www.awsdms.anylinuxwork.in</a></p></div></div>';
+    $subject = "Meeting request";
+    $to = $form_state['values']['email'];
+    $from = variable_get('site_mail', ini_get('sendmail_from'));
+    $params['message'] = $message;
+    $params['subject'] = $subject; 
+    drupal_mail('aws_dms_meeting_scheduler', 'key', $to, language_default(), $params, $from, TRUE);
+	
+	// Send request mail to siteadmin.
+	 $default_timezone = date_default_timezone();
+	if ((format_date($result->meeting_date, 'custom',"Y", $default_timezone)) == format_date($result->meeting_end_date , 'custom',"Y", $default_timezone)) {
+            if ((format_date($result->meeting_date, 'custom',"m",$default_timezone)) == format_date($result->meeting_end_date,  'custom',"m", $default_timezone)) {
+              $date =  format_date($result->meeting_date, 'custom', 'd', $default_timezone) . '-' . format_date($result->meeting_end_date,  'custom', 'd', $default_timezone) . " " . format_date($result->meeting_date, 'custom', 'M', $default_timezone) . ', ' . format_date($result->meeting_date, 'custom', 'Y', $default_timezone);
+            }
+            else {
+              $date = format_date($result->meeting_date,  'custom', "d M", $default_timezone) . '-' . format_date($result->meeting_end_date, 'custom', "d M", $default_timezone) . ', ' . format_date($result->meeting_date, 'custom', "Y", $default_timezone);
+            }
+        }
+        else {
+           $date =  format_date($result->meeting_date, 'custom',"d F Y", $default_timezone) . '-' . format_date($result->meeting_end_date, 'custom',"d F Y", $default_timezone);
+        }
+	$message_admin .='<div style="width:605px; float:left;"><p style="width:100%; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:10px; color:#333; ">Hi Admin,</p>';
+    $message_admin .='<p style="color:#333; padding-bottom:25px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; ">You have received a new meeting request for '.$result->name. '  ' . $result->address1 . ' and the details are as follows:</p>';
+	
+	$message_admin .="<p style='color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; '><strong>Meeting Date's :</strong>" . '  ' . $date. "</p>";
+	$message_admin .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Name :</strong>' . '  ' . $form_state['values']['name']. '</p>';
+	$message_admin .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Email :</strong>'. '  ' . $form_state['values']['email']. '</p>';
+	$message_admin .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Booking Date & Time :</strong>'. '  ' . $form_state['values']['Date'] . ' ' . $form_state['values']['time']. '</p>';
+	$message_admin .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Company :</strong>'. '  ' . $form_state['values']['company']. '</p>';
+	$message_admin .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Message :</strong>'. '  ' . $form_state['values']['message']. '</p></br>';
+	$message_admin .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; ">Happy travels</p>';
+    $message_admin .='<div style="width:50%; float:left; font-family:Arial, Helvetica, sans-serif; font-size:12px;"> 
+    <p style="color:#333; padding:0px; margin:0px;">AWS DMS – Destination Management System</p>
+    <p style="color:#333; padding:0px; margin:0px;">Email: <a href="#" style="color:#00F;">awsdms@anylinuxwork.in</a></p>
+       <p style="color:#333; padding:0px; margin:0px;"><a href="http://www.awsdms.anylinuxwork.in">www.awsdms.anylinuxwork.in</a></p></div></div>';
+    $subject = "Meeting Request Notification";
+    $to = variable_get('site_mail', ini_get('sendmail_from'));
+    $from = variable_get('site_mail', ini_get('sendmail_from'));
+    $params['message'] = $message_admin;
+    $params['subject'] = $subject;
+	
+    drupal_mail('aws_dms_meeting_scheduler', 'key', $to, language_default(), $params, $from, TRUE);
+	
+	 
+    drupal_set_message(t('Meeting Request has been sent successfully.'));
+  } catch (PDOException $e) {
+    drupal_set_message(t('Error: %message', array('%message' => $e->getMessage())), 'errors');
+  }     
+}
+
+/**
+ * Implements hook_mail().
+ */
+function aws_dms_meeting_scheduler_mail($key = '', &$message, $params) {
+   $headers = array(
+        'MIME-Version' => '1.0',
+        'Content-Type' => 'text/html; charset=iso-8859-1; format=flowed',
+        'Content-Transfer-Encoding' => '8Bit',
+        'X-Mailer' => 'Drupal',
+    );
+    foreach ($headers as $key => $value) {
+      $message['headers'][$key] = $value;
+    }
+    $message['subject'] = $params['subject'];
+    // The email body is here, inside the $message array.
+    $message['body'][] = $params['message'];
+}
+
+/**
+ * Function to get time zone.
+ */
+function  get_time_zone($time_zone, $format) {
+  date_default_timezone_set($time_zone);
+  return date($format, time());
+}

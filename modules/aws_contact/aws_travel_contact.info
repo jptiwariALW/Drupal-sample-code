@@ -1,0 +1,6 @@
+name = AWS Travel Contact us
+description = Contact us module.
+package = AWS Travel
+core = 7.x
+version = 7.x-1.0
+

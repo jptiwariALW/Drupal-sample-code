@@ -1,0 +1,171 @@
+<?php
+/**
+ * @file
+ * Drupal installation file.
+ */
+/**
+ * Implements hook_schema().
+ */
+function aws_dms_meeting_scheduler_schema() {
+  $schema = array();
+  $schema['meeting_scheduler'] = array(
+    'description' => 'Meeting Schedule by the admin',
+    'fields' => array(
+      'mid' => array(
+        'description' => 'Primary key for our table',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Conference Name',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),
+      'address1' => array(
+        'description' => 'Conference Address1',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),
+      'address2' => array(
+        'description' => 'Conference Address2',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),   
+      'city' => array(
+        'description' => 'Conference City',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),   
+      'state' => array(
+        'description' => 'Conference State',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),
+      'zip_code' => array(
+        'description' => 'Conference Zip code',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ), 
+      'country' => array(
+        'description' => 'Conference Country',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),
+      'meeting_date' => array(
+        'description' => 'Meeting Start Date',
+        'type' => 'int',
+        'length' => 10,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'meeting_end_date' => array(
+        'description' => 'Meeting End Date',
+        'type' => 'int',
+        'length' => 10,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'meeting_date' => array(
+        'description' => 'Meeting Timezone',
+        'type' => 'varchar',
+        'length' => 50,
+        'not null' => TRUE,
+        'default' => ''
+      ),
+      'description' => array(
+        'description' => 'Meeting Description',
+        'type' => 'text',
+        'length' => 255,
+        'default' => ''
+      ),   
+      'created' => array(
+        'description' => 'The Unix timestamp when the meeting was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('mid'),
+  );
+  $schema['meeting_request'] = array(
+    'description' => 'Meeting request when customer book a meeting',
+    'fields' => array(
+      'rid' => array(
+        'description' => 'Primary key',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'mid' => array(
+        'description' => 'Meeting Id',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'name' => array(
+        'description' => 'Visitor Name',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),            
+      'email' => array(
+        'description' => 'Visitor Email',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),            
+     'company' => array(
+        'description' => 'Visitor Company',
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => ''
+      ),           
+      'message' => array(
+        'description' => 'Response from Visitor',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),            
+      'booking_date' => array(
+        'description' => 'Requested Meeting date',
+        'type' => 'int',
+        'length' => 10,
+        'default' => 0
+      ),            
+      'status' => array(
+        'description' => "Status",
+        'type' => 'int',
+        'size' => 'tiny',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'comment' => array(
+        'description' => 'Response from admin',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),
+      'request_created' => array(
+        'description' => 'The Unix timestamp when the meeting request was created',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'request_updated' => array(
+        'description' => 'The Unix timestamp when the meeting was updated',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('rid'),
+  );
+  return $schema;
+}

@@ -1,0 +1,6 @@
+name = AWS Order management
+description = AWS Order Manage Module.
+package = AWS
+core = 7.x
+version = 7.x-1.0
+

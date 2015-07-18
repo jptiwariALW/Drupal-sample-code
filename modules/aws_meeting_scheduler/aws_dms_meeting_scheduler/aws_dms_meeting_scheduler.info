@@ -1,0 +1,6 @@
+name = Meeting Scheduler
+description = Meeting scheduler module
+package = AWS DMS
+core = 7.x
+version = 7.x-1.0
+

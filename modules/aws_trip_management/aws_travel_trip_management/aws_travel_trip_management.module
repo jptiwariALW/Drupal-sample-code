@@ -1,0 +1,625 @@
+<?php
+/**
+ * @file
+ * Main Module file
+ */
+
+/**
+ * Defining constants used on module file.
+ */
+  define('NODE_STATUS_PUBLISHED', 1);
+  define('IS_BLOCK_ACTIVE', 1);
+
+/**
+ * Implementing Block info hook_block_info().
+ */
+function aws_travel_trip_management_block_info() {
+  //block is used for country on trip detail page.
+  $blocks['trip_detail_country'] = array(
+    'info' => t('Display associated country of the trip'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used for trip price and its currency on trip detail page.
+  $blocks['trip_detail_price'] = array(
+    'info' => t('Display price on of trip'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used for ages value on trip detail page.
+  $blocks['trip_detail_ages'] = array(
+    'info' => t('Display minimum ages of trip'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show group size min or max on trip detail page.
+  $blocks['trip_group_size'] = array(
+    'info' => t('Display group size of trip'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show book trip (enquriy) on trip detail page.
+  $blocks['book_trip_button'] = array(
+    'info' => t('Book this trip button'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is useto show carbon offset value on trip detail page.
+  $blocks['trip_carbon_offset'] = array(
+    'info' => t('Display carbon offset of trip'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show block image on region menu.
+  $blocks['menu_block_image'] = array(
+    'info' => t('Display region menu block image'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show title on region pages .
+  $blocks['new_trip_titles'] = array(
+    'info' => t('Display new trip titles'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show destination country listing on region page.
+  $blocks['our_destination_in'] = array(
+    'info' => t('Display Destination in regions'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show destination title on destination country page.
+  $blocks['destination_titles'] = array(
+    'info' => t('Display Destination titles'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show destination map on destination country page.
+  $blocks['destination_map'] = array(
+    'info' => t('Display Destination map image'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show destination country trip on destination country page.
+  $blocks['destination_trips'] = array(
+    'info' => t('Display Destination page trips'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show trip according to year on home page.
+  $blocks['new_trips_year'] = array(
+    'info' => t('Display New trips for year'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show recently viwed trip by user on trip detail pages.
+  $blocks['recently_viewed'] = array(
+    'info' => t('Display recently viewed trips'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show value of destination country help text on destination pages.
+  $blocks['country_helptest'] = array(
+    'info' => t('Display help text content'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show value of region help text on region pages.
+  $blocks['region_helptest'] = array(
+    'info' => t('Display help text content on region pages'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show right navigation with trip name on trip detail pages.
+  $blocks['trip_right_menu'] = array(
+    'info' => t('Display right side menu'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show physical and cultural rating on trip detail pages.
+  $blocks['rating'] = array(
+    'info' => t('Display ratings on trip page'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+   //block is used to show trip notes page details.
+  $blocks['trip_notes'] = array(
+    'info' => t('Display trip date on trip notes'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show trip notes page table content.
+  $blocks['table_content'] = array(
+    'info' => t('Display table content on trip notes'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show trip notes button on trip detail page.
+  $blocks['trip_notes_btn'] = array(
+    'info' => t('Display trip notes btn'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show trip notes physical rating block on trip notes page.
+  $blocks['tripnotes_phy_rating'] = array(
+    'info' => t('Display physical rating trip notes'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  //block is used to show trip notes cultural rating block on trip notes page.
+  $blocks['tripnotes_cul_rating'] = array(
+    'info' => t('Display cultural rating trip notes'),
+    // Default setting
+    'cache' => DRUPAL_NO_CACHE,
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function aws_travel_trip_management_theme() {
+  return array(
+    'custom_region_block_template' => array(
+      'variables' => array(),
+      'template' => 'custom_region_block_template',
+    ),
+    'custom_trip_block_template' => array(
+      'variables' => array(),
+      'template' => 'custom_trip_block_template',
+    ),
+    'custom_tripnotes_block_template' => array(
+      'variables' => array(),
+      'template' => 'custom_tripnotes_block_template',
+    ),
+    'custom_destination_block_template' => array(
+      'variables' => array(),
+      'template' => 'custom_destination_block_template',
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ * Display the content of the block
+ */
+function aws_travel_trip_management_block_view($delta='') {
+  $variables_arr = array();
+  $block = '';
+  $block['content'] = '';
+  if (aws_travel_trip_management_is_node() == TRUE) {
+    $node = menu_get_object();
+  }
+  switch ($delta) {
+    case 'trip_detail_price':
+      if (aws_travel_trip_management_is_node() == TRUE) {
+        //Load the modal library and add the modal javascript.
+        ctools_include('modal');
+        ctools_modal_add_js();
+        if ($node) {
+          $field_language = field_language('node', $node, 'field_currency');
+          $currency = array('AUD' => "$", 'USD' => "$", 'NZD' => '$', 'CAD' => '$', 'EUR' => '&euro;' , 'GBP' => '£', 'ZAR' => '$', 'CHF' => '');
+          $variables_arr['from'] = t('Price from');
+          $variables_arr['currency'] = $currency[aws_travel_trip_management_get_term_data($node->field_currency[$field_language][0]['tid'])] . str_replace('.00', '', $node->field_price['und'][0]['value']);
+          $variables_arr['price_currency'] = aws_travel_trip_management_get_term_data($node->field_currency[$field_language][0]['tid']);
+          $variables_arr['trip_detail_price'] = IS_BLOCK_ACTIVE;
+          $block['content'] = theme('custom_trip_block_template', $variables_arr);
+          return $block;
+        }
+      }
+    break;
+  case 'trip_detail_country':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $field_language = field_language('node', $node, 'field_countrys');
+      if ($node->field_countrys) {
+        $variables_arr['data'] = aws_travel_trip_management_get_country($node->field_countrys[$field_language][0]['value']);
+        $variables_arr['trip_detail_country'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_trip_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  case 'trip_detail_ages':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['ages'] = $node->field_ages['und'][0]['value'];
+      $variables_arr['trip_detail_ages'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_trip_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'trip_group_size':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['group_size_min'] = $node->field_min_size['und'][0]['value'];
+      $variables_arr['group_size_max'] = $node->field_max_size['und'][0]['value'];
+      $variables_arr['trip_group_size'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_trip_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'trip_carbon_offset':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['trip_carbon_offset_val'] = $node->field_carbon_offset['und'][0]['value'];
+      $variables_arr['trip_carbon_offset'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_trip_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'book_trip_button':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['book_trip_button_val'] = t('Book trip');
+      $variables_arr['book_trip_button'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_trip_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'new_trip_titles':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['new_trip_titles_val'] = $node->title;
+      $variables_arr['new_trip_titles'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_region_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'destination_titles':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['destination_titles_txt'] = t('Destination title');
+      $variables_arr['destination_titles_val'] = $node->title;
+      $variables_arr['destination_titles'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_destination_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'destination_map':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      if ($node->field_country_map_image) {
+        $block['subject'] = '<h2>' . t('Map of') . ' ' . $node->title . '</h2>';
+        $variables_arr['image_url'] = url('sites/default/files/' . file_uri_target($node->field_country_map_image['und'][0]['uri']), array('absolute' => TRUE));
+        $variables_arr['destination_map'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_destination_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  case 'menu_block_image':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      if ($node->field_menu_block_image['und'][0]['uri']) {
+        $variables_arr['menu_image_url'] = url('sites/default/files/' . file_uri_target($node->field_menu_block_image['und'][0]['uri']), array('absolute' => TRUE));
+        $variables_arr['menu_block_image'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_destination_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  case 'our_destination_in':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $html = '' ;
+      $result = db_query("SELECT entity_id FROM {node} as n join field_data_field_regions as fr on fr.entity_id = n.nid where (n.type = :field_type) and (fr.field_regions_value = :field_region_value)", array(':field_type' => 'country', ':field_region_value' => $node->vid), array("order by n.title asc"));
+      $entity_ids = array();
+      foreach ($result as $record) {
+        $entity_ids[] = $record->entity_id;
+      }
+      $destinations = node_load_multiple($entity_ids);
+      $block['subject'] = '<h2>' . t('Our destination in') . ' ' . $node->title . '</h2>';
+      foreach ($destinations as $entities) {
+        $url =  url('node/' . $entities->vid);
+        $title = str_replace('/' , ' ' , $url);
+        $title = str_replace('-' , ' ' , $title);
+        $html .= '<div class="col-sm-4 content-collection ">';
+        $html .= '<a href="' . url('node/' . $entities->vid) . '">';
+        if ($entities->field_country_standard_image['und'][0]['uri']) {
+          $image_uri = url('sites/default/files/' . file_uri_target($entities->field_country_standard_image['und'][0]['uri']), array('absolute' => TRUE));
+          $html .= '<div id="destination_stnd_img">';
+          $html .= '<img src ="' . $image_uri . '">';
+          $html .= '</div>';
+        }
+        $html .= '<div id="destination_name">' . $entities->title . '</div>';
+        $html .= '</a>';
+        $html .= '</div>';
+        $block['content'] = $html;
+      }
+      return $block;
+    }
+    break;
+  case 'destination_trips':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $html = '';
+      $result = db_query('SELECT entity_id FROM {field_data_field_countrys} where field_countrys_value = :field_countrys_value' , array(':field_countrys_value' => $node->vid) , array("order by entity_id asc"));
+      $currency = array('AUD' => "$", 'USD' => "$", 'NZD' => '$', 'CAD' => '$', 'EUR' => '&euro;' , 'GBP' => '£', 'ZAR' => '$', 'CHF' => '');
+      $entity_ids = array();
+      foreach ($result as $record) {
+        $entity_ids[] = $record->entity_id;
+      }
+      $destination_trips = node_load_multiple($entity_ids);
+      $field_language = field_language('node', $node, 'field_currency');
+      $i =0;
+      foreach ($destination_trips as $entities) {
+        $field_curr = field_language('node', $entities, 'field_currency');
+        $field_short = field_language('node', $entities, 'field_short_description');
+        $html .= '<div id="trip_wrapper">';
+        $html .= '<div id="trip_wrapper_inner">';
+        if ($entities->field_standard_image) {
+          $image_uri = url('sites/default/files/' . file_uri_target($entities->field_standard_image['und'][0]['uri']), array('absolute' => TRUE));
+          $html .= '<div id="banner">';
+          $html .= '<img src ="' . $image_uri . '">';
+          $html .= '</div>';
+        }
+        $html .= '<div class ="trip_title"><a href="' . url('node/' . $entities->vid) . '">' . $entities->title . '</a></div>';
+        $html .= '<div class ="trip_days_from"><span class="day">' . $entities->field_days['und'][0]['value'] . '</span><span>' . t('days from') . '</span>';
+        $html .= '<div class="price_currency">' . aws_travel_trip_management_get_term_data($entities->field_currency[$field_curr][0]['tid']) . '</div>';
+        $html .= '<div class="price_symbol">' . $currency[aws_travel_trip_management_get_term_data($entities->field_currency[$field_curr][0]['tid'])] . str_replace('.00', '', $entities->field_price['und'][0]['value']) . '
+         <i title="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text." data-placement="left" data-toggle="tooltip" class="info-tooltip fa fa-info-circle"> </i></div></div>';
+        $html .= '<div class="short_desc">' . aws_travel_trip_management_gen_string($entities->field_short_description[$field_short][0]['value'] , 150) . '</div>';
+        $html .='<a href="' . url('node/' . $entities->vid) . '" class="btn btn-primary btn-lg">' . t('View trip') . '</a>';
+        $html .= '</div>';
+        $html .= '</div>';
+        $i++;
+        if ($i==8) break;
+        }
+        if ($i == 8) {
+          $path = '#';
+          $html .='<div class="show_trip_btn">' . l(t('Show more'), $path, array('attributes' => array('class' => 'btn btn-primary btn-lg'))) . '</div>';
+        }
+        $block['content'] = $html;
+        return $block;
+      }
+    break;
+  case 'recently_viewed':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $result =aws_travel_trip_management_viewed();
+      $result = explode(',', $result);
+      $html = '' ;
+      $currency = array('AUD' => "$", 'USD' => "$", 'NZD' => '$', 'CAD' => '$', 'EUR' => '&euro;' , 'GBP' => '£', 'ZAR' => '$', 'CHF' => '');
+      $entity_ids = array();
+      $destination_trips = node_load_multiple($result);
+      $i =0;
+      foreach ($destination_trips as $entities) {
+        $field_language_curr = field_language('node', $entities, 'field_currency');
+        $html .= '<div id="trip_wrapper">';
+        $html .= '<div id="trip_wrapper_inner">';
+        if ($entities->field_standard_image) {
+          $image_uri = url('sites/default/files/' . file_uri_target($entities->field_standard_image['und'][0]['uri']), array('absolute' => TRUE));
+          $html .= '<div id="banner">';
+          $html .= '<img src ="' . $image_uri . '">';
+          $html .= '</div>';
+        }
+        $html .= '<div class ="trip_title"><a href="' . url('node/' . $entities->vid) . '">' . $entities->title . '</a></div>';
+        $html .= '<div class ="trip_days_from"><span class="day">' . $entities->field_days['und'][0]['value'] . '</span><span>' . t('days from') . '</span>';
+        $html .= '<div class="price_currency">' . aws_travel_trip_management_get_term_data($entities->field_currency[$field_language_curr][0]['tid']) . '</div>';
+        $html .= '<div class="price_symbol">' . $currency[aws_travel_trip_management_get_term_data($entities->field_currency[$field_language_curr][0]['tid'])] . str_replace('.00', '', $entities->field_price['und'][0]['value']) . '
+        <i title="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text " data-placement="left" data-toggle="tooltip" class="info-tooltip fa fa-info-circle"> </i></div></div>';
+        $html .= '</div>';
+        $html .= '</div>';
+        ++$i;
+        if ($i==4) break;
+        }
+        $block['content'] = $html;
+        return $block;
+      }
+    break;
+  case 'new_trips_year':
+    $html = '' ;
+    $result = aws_travel_trip_management_get_value_options();
+    $currency = array('AUD' => "$", 'USD' => "$", 'NZD' => '$', 'CAD' => '$', 'EUR' => '&euro;' , 'GBP' => '£', 'ZAR' => '$', 'CHF' => '');
+    $block['subject'] = '<h2>' . date('Y') . ' ' . t('New trips') . '</h2>';
+    $destination_trips = node_load_multiple($result);
+    $i =0;
+    foreach ($destination_trips as $entities) {
+      $field_language = field_language('node', $entities, 'field_short_description');
+      $field_language_new = field_language('node', $entities, 'field_currency');
+      $field_language_days = field_language('node', $entities, 'field_days');
+      $field_language_price = field_language('node', $entities, 'field_price');
+      $html .= '<div id="trip_wrapper">';
+      $html .= '<div id="trip_wrapper_inner">';
+      $html .= '<div class="product-image">';
+      if ($entities->field_standard_image) {
+        $image_uri = url('sites/default/files/' . file_uri_target($entities->field_standard_image['und'][0]['uri']), array('absolute' => TRUE));
+        $html .= '<div id="banner">';
+        $html .= '<img src ="' . $image_uri . '">';
+        $html .= '</div>';
+      }
+      $html .= '</div>';
+      $html .= '<div class="product-info">';
+      $html .= '<h4><a href="' . url('node/' . $entities->vid) . '">' . $entities->title . '</a></h4>';
+      if ($entities->field_days && $entities->field_currency && $entities->field_price) {
+        $html .= '<h5>' . $entities->field_days[$field_language_days][0]['value'] . ' ' . t('days from ') . ' ' . aws_travel_trip_management_get_term_data($entities->field_currency[ $field_language_new][0]['tid']) . ' ' . $currency[aws_travel_trip_management_get_term_data($entities->field_currency[$field_language_new][0]['tid'])] . str_replace('.00', '', $entities->field_price[$field_language_price][0]['value']) . '
+        <i data-original-title="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text " data-placement="left" data-toggle="tooltip" class="info-tooltip fa fa-info-circle"> </i></h5>';
+      }
+      if ($entities->field_short_description) {
+        $html .= '<div>' . aws_travel_trip_management_gen_string($entities->field_short_description[$field_language][0]['value'], 80) . '</div>';
+      }
+      $html .= '<p><a href="' . url('node/' . $entities->vid) . '" class="btn btn-primary btn-lg">' . t('View trip') . '</a></p>';
+      $html .= '</div>';
+      $html .= '</div>';
+      $html .= '</div>';
+      $i++;
+      if ($i==4) break;
+      }
+      $block['content'] = $html;
+      return $block;
+    break;
+  case 'country_helptest':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $field_language = field_language('node', $node, 'field_sub_heading');
+      if ($node->field_sub_heading) {
+        $variables_arr['country_helptest_val'] = $node->field_sub_heading[$field_language][0]['value'];
+        $variables_arr['country_helptest'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_destination_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  case 'region_helptest':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      if ($node->field_region_sub_heading) {
+        $variables_arr['region_helptest_val'] =  $node->field_region_sub_heading['und'][0]['value'];
+        $variables_arr['region_helptest'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_region_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  case 'trip_right_menu':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $variables_arr['trip_right_menu_val'] = $node->title;
+      $variables_arr['trip_right_menu'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_trip_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'rating':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $physical_rating = $node->field_physical_rating['und'][0]['value'];
+      $cultural_rating = $node->field_cultural_rating['und'][0]['value'];
+      if ($node->field_physical_rating || $node->field_cultural_rating ) {
+        $variables_arr['rating_val'] = $physical_rating;
+        $variables_arr['cultural_rating_val'] = $cultural_rating;
+        $variables_arr['rating'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_trip_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+
+  case 'table_content':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $block['subject'] = '<h2>' . t('Table of Contents') . '</h2>';
+      $variables_arr['table_content_nodes'] = $node;
+      $variables_arr['table_content'] = IS_BLOCK_ACTIVE;
+      $block['content'] = theme('custom_tripnotes_block_template', $variables_arr);
+      return $block;
+    }
+    break;
+  case 'trip_notes_btn':
+    $html = '';
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $entity_id = db_query('SELECT entity_id FROM {field_data_field_trip} WHERE field_trip_target_id = :field_trip_target_id', array(':field_trip_target_id' => $node->nid))->fetchField();
+      $result = db_query('SELECT title FROM {node} WHERE nid = :nid', array(':nid' => $entity_id))->fetchField();
+      if ($result) {
+        $path = drupal_get_path_alias('node/' . $node->nid);
+        $array = explode('/', $path);
+        if (isset($array[0])) {
+          $variables_arr['btn_url'] = "/$array[0]-$node->nid/tripnotes";
+          $variables_arr['trip_notes_btn'] = IS_BLOCK_ACTIVE;
+          $block['content'] = theme('custom_trip_block_template', $variables_arr);
+          return $block;
+        }
+      }
+    }
+    break;
+  case 'tripnotes_phy_rating':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $parameters = request_path();
+      $arr = $str = preg_replace('/\D/', '', $parameters);
+      $node = node_load($arr);
+      if ($node->field_physical_rating) {
+        $variables_arr['tripnotes_phy_rating_val'] = $node->field_physical_rating['und'][0]['value'];
+        $variables_arr['tripnotes_phy_rating'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_trip_notes_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  case 'tripnotes_cul_rating':
+    if (aws_travel_trip_management_is_node() == TRUE) {
+      $parameters = request_path();
+      $arr = $str = preg_replace('/\D/', '', $parameters);
+      $node = node_load($arr);
+      if ($node->field_cultural_rating) {
+        $variables_arr['tripnotes_cul_rating_val'] = $node->field_cultural_rating['und'][0]['value'];
+        $variables_arr['tripnotes_cul_rating'] = IS_BLOCK_ACTIVE;
+        $block['content'] = theme('custom_trip_notes_block_template', $variables_arr);
+        return $block;
+      }
+    }
+    break;
+  }
+  $block['content'] = theme('custom_block_template', $variables_arr);
+  return $block;
+}
+
+/**
+ * function to get Taxonomy term name
+ */
+function aws_travel_trip_management_get_term_data($tid) {
+  $name = '';
+  if ($tid) {
+    $term = taxonomy_term_load($tid);
+    $name = $term->name;
+  }
+  return $name;
+}
+
+/**
+ * This function used to show recently viwed nodes by user.
+ */
+function aws_travel_trip_management_viewed() {
+  if (arg(1) && arg(0) == 'node') {
+    $node = node_load(arg(1));
+    if ($node->type == 'trip') {
+      $value = $node->nid;
+      if (!isset($_SESSION["trip_nodes"])) {
+        return $_SESSION["trip_nodes"] = $node->nid;
+      }
+      elseif (isset($_SESSION["trip_nodes"])) {
+        $new_value = $value . ',' . $_SESSION["trip_nodes"];
+        return  $_SESSION["trip_nodes"] = $new_value;
+      }
+    }
+  }
+}
+
+/**
+ * This function fetch country according to id.
+ */
+function aws_travel_trip_management_get_country($id) {
+  $node = node_load($id);
+  $result = $node->title;
+  return $result;
+}
+
+/**
+ * This function used to genrate string without word wrap
+ */
+function aws_travel_trip_management_gen_string($string, $max = 20) {
+  $tok = strtok($string, ',');
+  $tok = strtok($tok, ' ');
+  $string='';
+  while ($tok!==FALSE && strlen($string)<$max) {
+    if (strlen($string)+strlen($tok)<=$max)
+      $string .= $tok . ' ';
+    else
+      break;
+    $tok = strtok(' ');
+  }
+  return trim($string) . '...';
+}
+
+/**
+ * This function fetch options.
+ */
+function aws_travel_trip_management_get_value_options() {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->propertyCondition('type', 'trip')
+    ->propertyCondition('status', NODE_STATUS_PUBLISHED)
+    ->propertyOrderBy('created', 'DESC');
+  $results = $query->execute();
+  $object_node_ids = array_keys($results['node']);
+  $objects = node_load_multiple($object_node_ids);
+  foreach ($objects as $blog_post) {
+    if (date('Y', $blog_post->created) == date('Y')) {
+      $entity_ids[] = $blog_post->nid;
+    }
+  }
+  return $entity_ids;
+}
+
+/**
+ * This function is to check node or not.
+ */
+function aws_travel_trip_management_is_node() {
+  if (arg(1) && arg(0) == 'node') {
+    return TRUE;
+  }
+  return FALSE;
+}

@@ -1,0 +1,124 @@
+<?php
+/**
+ * @file
+ * Drupal installation file.
+ */
+/**
+ * Implements hook_schema().
+ */
+function aws_order_management_schema() {
+  $schema = array();
+  $schema['payment_order_table'] = array(
+     'description' => 'Order table',
+     'fields' => array(
+      'id' => array(
+         'description' => 'id',
+         'type' => 'serial',
+         'not null' => TRUE,
+        ),
+      'order_id' => array(
+         'description' => 'Order Id',
+         'type' => 'int',
+         'length' => 11,
+         'not null' => TRUE,
+        ),
+      'customer_name' => array(
+         'description' => 'Customer Name',
+         'type' => 'varchar',
+         'length' => 255,
+         'not null' => TRUE,
+        ),
+       'customer_surname' => array(
+         'description' => 'Customer Surname',
+         'type' => 'varchar',
+         'length' => 255,
+         'not null' => TRUE,
+        ),
+      'customer_email' => array(
+         'description' => 'Customer Email',
+         'type' => 'varchar',
+         'length' => 255,
+         ),
+      '	currency' => array(
+         'description' => 'currency',
+         'type' => 'varchar',
+         'length' => 255,
+         'default' => '',
+        ),   
+      'product_name' => array(
+         'description' => 'Product Name',
+         'type' => 'varchar',
+         'length' => 255,
+         'default' => '',
+        ),   
+      'description' => array(
+         'description' => 'Description',
+         'type' => 'varchar',
+         'length' => 255,
+         'default' => '',
+        ),
+      'payment_due_date' => array(
+         'description' => 'Payment Due Date',
+         'type' => 'int',
+         'length' => 11,
+        ), 
+      'extra_notes' => array(
+         'description' => 'Extra Notes',
+         'type' => 'varchar',
+         'length' => 255,
+         'default' => '',
+        ),
+      'order_status' => array(
+         'description' => 'Order Status',
+         'type' => 'varchar',
+         'length' => 255,
+         'default' => '',
+        ),
+       'created' => array(
+         'description' => 'Order createe date',
+         'type' => 'int',
+         'length' => 11,
+        ),
+       'order_creator' => array(
+         'description' => 'Order creator',
+         'type' => 'varchar',
+         'length' => 255,
+         'default' => '',
+        ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+
+/**
+* Implements hook_install().
+*/
+
+function aws_order_management_install() {
+  $new_vocab = (object) array(
+    'name' => 'Title',
+    'description' => 'This vocabulary has currency',
+    'machine_name' => 'currency',
+  );
+  taxonomy_vocabulary_save($new_vocab);
+  
+  $vocab = taxonomy_vocabulary_machine_name_load('currency');
+  $term1 = (object) array(
+   'name' => 'USD',
+   'description' => 'USD',
+   'vid' => $vocab->vid,
+  );
+  taxonomy_term_save($term1);
+}
+
+
+/**
+* Implements hook_uninstall().
+*/
+
+function aws_order_management_uninstall() {
+  $vocab = taxonomy_vocabulary_machine_name_load('title');
+  taxonomy_vocabulary_delete($vocab->vid);
+}

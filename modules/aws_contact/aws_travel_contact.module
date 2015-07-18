@@ -1,0 +1,383 @@
+<?php
+/**
+ * @file
+ * Main Module file.
+ */
+
+function aws_travel_contact_menu() {
+  $items = array();
+  $items['admin/enquiry'] = array(
+    'title' => 'Manage enquiry',
+    'description' => 'Manage enquiry',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'enquiry_list',
+    'access arguments' => array('access administration pages'),
+    'file' => 'includes/contact_us_admin.inc',
+  );
+  $items['enquiry/%ctools_js'] = array(
+    'page callback' => 'aws_travel_contact_callback',
+    'page arguments' => array(1),
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function aws_travel_contact_block_info() {
+  $blocks['contact_form'] = array(
+    'info' => t('Contact form'),
+    'cache' => DRUPAL_NO_CACHE, 
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function aws_travel_contact_block_view($delta = '') {
+  $block = array();
+  switch ($delta) {
+    case 'contact_form':
+      drupal_add_js(drupal_get_path('module', 'aws_travel_contact') . '/js/contact.js');
+      $block['content'] = drupal_get_form('aws_travel_contact_us_form');
+    break;
+  }
+  return $block;
+}
+
+/**
+ * Function is used to declear form fields of contact us form.
+ */
+function aws_travel_contact_us_form($form, &$form_state) {
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  $countries = country_get_list();
+  $form['#id'] = 'aws-travel-contact-form';
+  $form['#submit'][] = 'aws_travel_contact_us_form_submit';
+    $form['account'] = array(
+      '#type' => 'fieldset',
+      '#title' => t(' '),
+      '#collapsible' => FALSE,
+      '#collapsed' => FALSE,
+    );
+    $form['account']['Title'] = array(
+      '#type' => 'select',
+      '#title' => t('Title') . '<span class="form-required">*</span> ',
+      '#options' => aws_travel_contact_get_options('title'),
+      '#empty_option' => t('--Please select title--'),
+      '#prefix' => '<div id="qus_title">',
+      '#suffix' => '</div>',
+    );
+    $form['account']['fname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First name') . '<span class="form-required">*</span> ',
+      '#prefix' => '<div id="fname">',
+      '#suffix' => '</div>',
+    );
+    $form['account']['lname'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Last name') . '<span class="form-required">*</span> ',
+      '#prefix' => '<div id="lname">',
+      '#suffix' => '</div>',
+    );
+    $form['account']['acc_email'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Email') . '<span class="form-required">*</span> ',
+      '#prefix' => '<div id="fname">',
+      '#suffix' => '</div>',
+    );
+    $form['account']['country_of_residence'] = array(
+      '#type' => 'select',
+      '#title' =>  t('Country'),
+      '#options' => $countries,
+       '#default_value' => 'IN',
+      '#prefix' => '<div id="country">',
+      '#suffix' => '</div>',
+    );
+    $form['account']['postcode'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Postcode'),
+      '#prefix' => '<div id="postcode">',
+      '#suffix' => '</div>',
+    );
+    $form['account']['phone'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Phone'),
+      '#prefix' => '<div id="phone">',
+      '#suffix' => '</div>',
+    );
+   $form['account']['question'] = array(
+     '#type' => 'textarea',
+     '#title' =>  t('Question'),
+     '#required' => TRUE,
+    );
+   $form['account']['submit1'] = array(
+     '#type' => 'submit',
+     '#value' => 'Submit',
+     '#prefix' => '<div class="condition_wrapper">',
+     '#submit' => array('aws_travel_contact_register_submit'),
+     '#validate' => array('aws_travel_contact_register_validate'),
+     '#suffix' => '</div>',
+    );
+  return $form;
+}
+
+/**
+ * validate handler for contact-us register user.
+ */
+function aws_travel_contact_register_validate($form, &$form_state) {
+  if (!user_is_logged_in()) {
+    $mail = $form_state['values']['acc_email'];
+    if (!valid_email_address($mail)) {
+      form_set_error('acc_email', t('Please enter valid email.'));
+    }
+  }
+}
+
+
+/**
+ * Submit handler for user register form on contact-us.
+ */
+function aws_travel_contact_register_submit($form, &$form_state) {
+  $question = $form_state['values']['question'];
+  $phone = $form_state['values']['phone'];
+  $country = $form_state['values']['country_of_residence'];
+  $postcode = $form_state['values']['postcode'];
+  $title = $form_state['values']['Title'];
+  $user_name = $form_state['values']['fname'];
+  $lname = $form_state['values']['lname'];
+  $mail = $form_state['values']['acc_email'];
+  if (!user_is_logged_in()) {
+      $result = $query = db_insert('aws_travel_question');
+      $query->fields(array(
+        'user_name' => $user_name,
+        'email' => $mail,
+        'Question' => $question,
+      ));
+      $query->execute();
+      $result = $query = db_insert('aws_travel_contact_details');
+      $query->fields(array(
+        'first_name' => $user_name,
+        'last_name' => $lname,
+        'email' => $mail,
+        'country'  => $country,
+        'postcode' => $postcode,
+        'phone_no' => $phone,
+        'title' => preg_replace('/[^(\x20-\x7F)]*/', '', $title)
+      ));
+      $query->execute();
+      if ($result) {
+        drupal_set_message(t('Thank you for your enquiry.'));
+      }
+  }
+}
+
+/**
+ * Function to get select box values based on taxonomy term.
+ */
+function aws_travel_contact_get_options($machine_name) {
+  $options = array();
+  $vid = taxonomy_vocabulary_machine_name_load($machine_name)->vid;
+  $options_source = taxonomy_get_tree($vid);
+  foreach ($options_source as $item ) {
+    $key = $item->tid;
+    $value = $item->name;
+    $options[$value] = $value;
+  }
+  return $options;
+}
+
+
+/**
+ * Set validation rule for required fields.
+ */
+function _aws_travel_clientside_validation_set_required($name, $title, $required, &$js_rules, $message = '') {
+  $title = _clientside_validation_set_title($title);
+  if ($name == 'fname') {
+    $message = "Please enter first name";
+  }
+  if ($required) {
+    $js_rules[$name]['required'] = TRUE;
+    if (empty($message)) {
+      $variables = array(
+        'message' => 'Please enter !title',
+        'placeholders' => array('!title' => str_replace(".", "", str_replace(':', '', strtolower($title)))),
+        'error_type' => 'required',
+        'element_name' => $name,
+      );
+    }
+    else {
+      $variables = array(
+        'message' => $message,
+        'error_type' => 'required',
+        'element_name' => $name,
+      );
+    }
+    $js_rules[$name]['messages']['required'] = theme('clientside_error', $variables);
+  }
+}
+
+/**
+* Ajax menu callback.
+*/
+function aws_travel_contact_callback($ajax) {
+  if ($ajax) {
+    ctools_include('ajax');
+    ctools_include('modal');
+    $form_state = array(
+      'ajax' => TRUE,
+      'title' => 'Enquiry',
+    );
+    $output = ctools_modal_form_wrapper('aws_travel_contact_enquiry_form', $form_state );
+    if (!empty($form_state['ajax_commands'])) {
+      $output = $form_state['ajax_commands'];
+    }
+    print ajax_render($output);
+    drupal_exit();
+  }
+  else {
+    return drupal_get_form('aws_travel_contact_enquiry_form');
+  }
+}
+
+/**
+* Drupal form to be put in a modal.
+*/
+function aws_travel_contact_enquiry_form($form, $form_state) {
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  $countries = country_get_list();
+  $form = array();
+  if (isset($_SESSION['trip_nodes'])) {
+    $trip_name = $_SESSION['trip_nodes'];
+    $result = explode(',', $trip_name);
+    $trip_id = current($result);
+    $trip_title = aws_travel_contact_get_node_title($trip_id);
+  }
+  $form['node_title'] = array(
+   '#type' => 'hidden',
+   '#default_value' => $trip_title,
+  );
+    $form['help_text'] = array(
+    '#markup' => '<h4 class="hlp_txt">Enquiry</h4>'
+    );
+    $form['Title'] = array(
+      '#type' => 'select',
+      '#title' => t('Ttile') . '<span class="form-required">*</span> ',
+      '#options' => aws_travel_contact_get_options('title'),
+      '#empty_option' => t('--Please select title--'),
+    );
+    $form['fname'] = array(
+      '#type' => 'textfield',
+      '#title' => t('First name') . '<span class="form-required">*</span> ',
+     );
+    $form['lname'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Last name') . '<span class="form-required">*</span> ',
+    );
+    $form['acc_email'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Email') . '<span class="form-required">*</span> ',
+    );
+    $form['country_of_residence'] = array(
+      '#type' => 'select',
+      '#title' =>  t('Country'),
+      '#options' => $countries,
+      '#default_value' => 'IN',
+    );
+    $form['postcode'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Postcode'),
+     );
+    $form['phone'] = array(
+      '#type' => 'textfield',
+      '#title' =>  t('Phone'),
+    );
+   $form['question'] = array(
+     '#type' => 'textarea',
+     '#title' =>  t('Question'),
+     '#required' => TRUE,
+    );
+   $form['submit1'] = array(
+     '#type' => 'submit',
+     '#value' => 'Submit',
+     '#prefix' => '<div class="condition_wrapper">',
+     '#submit' => array('aws_travel_contact_enquiry_form_submit'),
+     '#suffix' => '</div>',
+    );
+  if ($form_state['submit1']) {
+    $commands[] = ctools_modal_command_dismiss();
+    $commands[] = ctools_ajax_command_redirect('/');
+    print ajax_render($commands);
+    drupal_exit();
+  }
+  return $form;
+}
+
+
+/**
+* Drupal form submit handler.
+*/
+function aws_travel_contact_enquiry_form_submit(&$form, &$form_state) {
+  $message = '';
+  $message .='<div style="width:605px; float:left;"><p style="width:100%; font-family:Arial, Helvetica, sans-serif; font-size:12px; line-height:10px; color:#333; ">Hi Admin,</p>';
+  $message .='<p style="color:#333; padding-bottom:25px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; ">You have received a new enquiry for ' . $form_state['values']['node_title'] . ' and the details are as follows:</p>';
+  $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>First Name :</strong>' . '  ' . $form_state['values']['Title'] . ' ' . $form_state['values']['fname'] . '</p>';
+  $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Last Name :</strong>' . '  ' . $form_state['values']['lname'] . '</p>';
+  $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Email :</strong>' . '  ' . $form_state['values']['acc_email'] . '</p>';
+  $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Country :</strong>' . '  ' . $form_state['values']['country_of_residence'] . '</p>';
+  if ($form_state['values']['postcode']) {
+    $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>postcode :</strong>' . '  ' . $form_state['values']['postcode'] . '</p>';
+  }
+  if ($form_state['values']['phone']) {
+    $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Phone :</strong>' . '  ' . $form_state['values']['phone'] . '</p>';
+  }
+  $message .='<p style="color:#333; padding:0px; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:12px; "><strong>Question :</strong>' . '  ' . $form_state['values']['question'] . '</p></br>';
+  $message .='<div style="width:50%; float:left; font-family:Arial, Helvetica, sans-serif; font-size:12px;"></div>';
+  $subject = "New enquiry submit";
+  $to   = variable_get('site_mail', ini_get('sendmail_from'));
+  $from = variable_get('site_mail', ini_get('sendmail_from'));
+  $params['message'] = $message;
+  $params['subject'] = $subject; 
+  drupal_mail('aws_travel_contact', 'key', $to, language_default(), $params, $from, TRUE);
+  drupal_set_message(t('Thank you for your enquiry.'));
+  $form_state['rebuild'] = TRUE;
+}
+
+/**
+ * Get countries list from country (3) taxonomy
+ */
+function get_countries_terms() {
+  $terms =country_get_list();
+  $terms_select = array();
+  foreach ($terms as $term) {
+    $terms_select[$term->name] = $term->name;
+  }
+  return $terms_select;
+}
+
+/**
+ * Implements hook_mail().
+ */
+function aws_travel_contact_mail($key = '', &$message, $params) {
+   $headers = array(
+        'MIME-Version' => '1.0',
+        'Content-Type' => 'text/html; charset=iso-8859-1; format=flowed',
+        'Content-Transfer-Encoding' => '8Bit',
+        'X-Mailer' => 'Drupal',
+    );
+    foreach ($headers as $key => $value) {
+      $message['headers'][$key] = $value;
+    }
+    $message['subject'] = $params['subject'];
+    //The email body is here, inside the $message array.
+    $message['body'][] = $params['message'];
+}
+
+/**
+ * Helper function to get the node title without loading the whole node object.
+ */
+function aws_travel_contact_get_node_title($nid) {
+  return db_query('SELECT title FROM {node} WHERE nid = :nid', array(':nid' => $nid))->fetchField();
+}

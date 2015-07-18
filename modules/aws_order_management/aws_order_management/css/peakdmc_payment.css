@@ -1,0 +1,505 @@
+.page-checkout .menu { display:none !important;}
+
+
+.page-checkout .navbar-header, body.page-node-220 .navbar-header {
+    float: none;
+    text-align: center;
+}
+
+body.not-front .push, body.not-front footer.footer {
+    height: 40px !important;
+}
+
+body.not-front #wrap {
+margin: 0px auto -40px !important;
+height: auto !important;
+min-height: 100%;
+}
+body.page-node-222.not-front #wrap { margin-bottom:0px !important}
+
+body.not-front.page-admin-payment #wrap, body.not-front.page-admin-order #wrap  { height:auto !important;}
+
+body.page-admin-payment .navbar-default.container, body.not-front.page-admin-order .navbar-default.container  { margin-bottom:0px;}
+
+body.page-admin-payment .menu-sert-menu .nav, body.not-front.page-admin-order .menu-sert-menu .nav { margin-top:36px !important; display:inline-block !important;}
+body.page-admin-payment.not-front .Main-logo .logo, body.not-front.page-admin-order .Main-logo .logo { margin-top:0px;  padding: 0 7% !important;}
+
+.not-front.page-admin-payment #main-content, body.not-front.page-admin-order #main-content { height:auto !important}
+
+#avatar_image { display:none; }
+
+body.not-front.page-checkout .header, body.page-node-220 .header  { height:120px !important;}
+
+.cus_fname_email_val { text-transform:none !important;}
+
+
+
+.page-checkout .block-awsdms-payment { width:100%; margin:66px auto; max-width:645px;}
+
+.page-checkout .block-awsdms-payment  .static_content { text-align:center;  font-family: "AvenirLTStd-Roman";
+    font-size: 19px;
+    font-weight:normal;
+    line-height: 23px;
+    margin: 0;
+    /*padding-bottom: 12px;*/ letter-spacing: 0.8px; margin-bottom:51px;} 
+	
+	.page-checkout .block-awsdms-payment  .static_content h3 { color: #4d4d4d;
+    font-family: "AvenirLTStd-Roman";
+    font-size: 29px;
+    font-weight: 700; letter-spacing: 3.6px; margin-bottom:25px; margin-top:0px;
+    }
+	
+	.page-checkout .block-awsdms-payment  #order_details, .page-checkout .block-awsdms-payment  .checkout_form { width:100%; background:#fff; display:inline-block; padding:30px; box-sizing:border-box; border-radius:8px;}
+	
+	.page-checkout .block-awsdms-payment  .checkout_form { margin-top:41px;}
+	
+.page-checkout .block-awsdms-payment h4  { color: #4d4e53;
+    font-family: "AvenirLTStd-Roman";  font-size: 23px;
+    font-weight: 700; margin-top:0px; letter-spacing: 2px; }
+	.page-checkout .block-awsdms-payment  #order_details div.customer_name {border-top:2px solid  #ededed;}
+	
+	.page-checkout .block-awsdms-payment  #order_details div { border-bottom:2px solid  #ededed; width:100%; float:left;  padding:8px 20px;}
+	
+		.page-checkout .block-awsdms-payment  #order_details span div { border-bottom:none; width:auto;   padding:0px; margin-bottom: 10px;}
+		
+		.page-checkout .block-awsdms-payment  #order_details span ul { clear:both;}
+	
+		.page-checkout .block-awsdms-payment  #order_details div span:first-child { font-family: "AvenirLTStd-Roman";  font-size: 13px; font-weight:700; color:#595a5f; width:38%; float:left; letter-spacing:1.8px;  }
+			.page-checkout .block-awsdms-payment  #order_details div span:last-child{ font-family: "AvenirLTStd-Roman"; font-size:13px; color:#949e9f; float:right; font-weight:600; width:61%; line-height:none; letter-spacing:1.8px; }
+			
+			.desc_value ul, .desc_value ol, .notes_value ul, .notes_value ol { margin-top: 4px;
+    padding-left: 20px;}
+			
+			.page-checkout .block-awsdms-payment  #order_details div span.desc_value, .page-checkout .block-awsdms-payment  #order_details div span.notes_value{ font-family: "AvenirLTStd-Roman"; font-size:14px; font-weight:normal;}
+	
+	.page-checkout .block-awsdms-payment  #form_txt h4 { margin-bottom:40px;}
+	.page-checkout #order_details  h4 { margin-bottom:28px;}
+	.page-checkout .block-awsdms-payment  .checkout_form label{
+    font-family: "AvenirLTStd-Light"; font-size:13px; margin-bottom:13px; letter-spacing:1.3px;}	
+	
+	.page-checkout .block-awsdms-payment  .checkout_form .form-item-fname, .page-checkout .block-awsdms-payment  .checkout_form .form-item-lname,  .page-checkout .block-awsdms-payment  .checkout_form .form-item-city, .page-checkout .block-awsdms-payment  .checkout_form .form-item-zip-code, .page-checkout .block-awsdms-payment  .checkout_form .form-item-state, .form-item-state, .page-checkout .block-awsdms-payment  .checkout_form .form-item-country   {display: inline-block;
+    vertical-align: top;
+    width: 49%;}
+	
+	.page-checkout .block-awsdms-payment  .checkout_form .form-item-lname, .page-checkout .block-awsdms-payment  .checkout_form .form-item-zip-code, .page-checkout .block-awsdms-payment  .checkout_form .form-item-country { float:right;} 
+	
+	#order-checkout-form input[type="text"], #order-checkout-form select{background: none repeat scroll 0 0 #f4f2e7;
+    border: medium none;
+    border-radius: 0;
+    box-shadow: none;
+    color: #4d4d4d;
+    font-family: "AvenirLTStd-Light";
+    font-size: 16px;
+    height: 45px; width:100%;}
+	
+	#order-checkout-form .form-submit {
+    background:url(submit-button.jpg) no-repeat 0 0 / 100%;
+    color: #fff;
+	text-indent:-9999px;
+	
+    display: block;
+    float: none;
+    font-size: 0px;
+    height: 43px;
+    margin: 15px auto;
+    position: static;
+    text-indent: 0;
+    width: 301px;
+	border-radius:30px;
+	padding:0 18px;
+}
+.form-type-checkbox.form-item-term-of-use {
+    padding-left: 0px;
+	margin-bottom: 10px;
+}
+.form-type-checkbox.form-item-term-of-use label { margin-left: 10px; font-family: "AvenirLTStd-Light";
+  font-size: 13px;}
+
+.page-user-order-create .right-bottom-navi form#admin-order-form {  width:100%; background:#fff; display:inline-block; padding:30px; box-sizing:border-box; border-radius:8px; margin-bottom:30px; position:relative;}
+
+.page-user-order-create .right-bottom-navi form#admin-order-form .form-type-textfield { width:49%; display:inline-block; vertical-align:top; height:82px;}
+.page-user-order-create .right-bottom-navi form#admin-order-form .form-item-surname, .page-user-order-create .right-bottom-navi form#admin-order-form .form-item-price, .page-user-order-create .right-bottom-navi form#admin-order-form .form-item-product-name{ float:right} 
+
+.page-user-order-create .right-bottom-navi form#admin-order-form .form-type-textfield label{  font-family: "AvenirLTStd-Light"; font-size:13px;  margin-bottom: 8px;
+    text-transform: uppercase; }
+.page-user-order-create .right-bottom-navi form#admin-order-form .form-type-textfield input{ background: none repeat scroll 0 0 #f4f2e7;
+    border: medium none;
+    border-radius: 0;
+    box-shadow: none;
+    color: #4d4d4d;
+    font-family: "AvenirLTStd-Light";
+    font-size: 16px;
+    height: 45px; width:100%; cursor:default;}
+	.ckeditor_links { display:none !important;}
+	
+	.container-inline-date  .form-item-payment-due-date label { float:left; margin-top:15px;}
+	
+	body .container-inline-date { float:right !important; height:69px;}
+	body .container-inline-date .form-item-payment-due-date-date { height:100%;}
+	body .container-inline-date label{ margin-left:0px !important;}
+	.page-user-order-create .right-bottom-navi form#admin-order-form .form-type-textfield.form-item-currency { height:100%;}
+	
+	body .container-inline-date  .form-item-payment-due-date #edit-payment-due-date .form-type-textfield { width:100% !important;} .container-inline-date  .form-item-payment-due-date #edit-payment-due-date { padding:0px; margin-left:0px;}
+	
+	
+	.page-user-order-create .right-bottom-navi form#admin-order-form button#edit-submit { left:49.5%; bottom:-31px;}
+	
+	/*.page-user-order-create .right-bottom-navi form#admin-order-form button#edit-submit {  background: none repeat scroll 0 0 #0063b2;
+    color: #fff;
+    display: block;
+    float: none;
+    font-size: 17px;
+    height: auto;
+	float:right;
+   
+    position: static;
+    text-indent: 0;
+    width: auto; }*/
+	
+.menu-sert-menu	li a { font-size:14px !important;}
+	
+	body.not-front.page-user-order-create  footer.footer .right-bottom-navi { margin-top:0px;}
+	
+	#order-search-form + .sticky-header  { position:static !important;}
+	
+	.table-striped.sticky-enabled th { vertical-align:top;}
+	body .page-admin-payment #order-search-form button#edit-submit { height:30px;}
+
+body .table-striped > tbody > tr.odd > td.active { background-color:#f9f9f9 !important}
+
+body .table-striped > tbody > tr.even > td.active, body .table-striped > thead > tr > th.active { background:none !important;}
+
+.page-checkout #avatar_image { display:none;}
+
+footer.footer .right-bottom-navi {
+    margin-top: 0px;
+}
+
+.desc_wrap { width:100%; display:inline-block;}
+
+.name_value, .price_value, .id_value, .product_value, .order_due_date span + span { text-transform:uppercase;}
+
+.page-node-220 .field-type-text-with-summary .field-item  { font-size:20px; color:#333; text-align:center; width:100%; float:left; margin-top:15%; font-family: "AvenirLTStd-Roman"; }
+
+.page-node-220 .navbar-collapse ul li {  float: left;
+    margin: 0 12px 6px;
+    padding: 0 0.6em 1.6% 8px !important;
+    vertical-align: bottom;}
+	
+	.verlay-exclude  {    background: none repeat scroll 0 0 #0063b2;
+    color: #fff;
+    display: inline-block;
+    font-size: 17px;
+    height: 30px;
+    margin-left: 11px;
+   
+    position: static;
+    text-indent: 0;
+    width: auto; border-radius:3px; float:right; padding:6px 10px !important; }
+	
+	.verlay-exclude:hover, .verlay-exclude:focus  { color:#fff; border:none; text-decoration:none;}
+	
+	.page-admin-order #main-content .main-continent.main-content { margin-left:8px;}
+	
+    .page-admin-order	.order_view_wrap p, .desc_wrap, .notes_wrap { width:60%;  padding:5px; font-family: "AvenirLTStd-Light"; letter-spacing:0.5px; font-size:14px; margin-bottom:0px !important; line-height:22px;}
+	.page-admin-order .order_view_wrap p:nth-child(2n + 0), .desc_wrap { background:none;}
+	
+	.page-admin-order .order_view_wrap p .cus_fname, div .cus_fname{ width:30% !important; font-size:14px; letter-spacing: 1px;}
+	
+	.page-admin-order .order_view_wrap p  .cus_fname_val, div .cus_fname_val{ width:60%; text-transform: capitalize;}
+	.page-admin-order .order_view_wrap p  .cus_fname_val, div .cus_order_val { float: left; width:60%;}
+	
+	
+	div .cus_fname_val p { background:none; padding:0px;}
+	
+	.desc_wrap, .notes_wrap { display:inline-block;}
+	
+	.order_view_wrap { margin-bottom:30px;}
+	
+	.page-node-220 #block-awsdms-payment-thank-page .right-bottom-navi { margin:55px auto;  background:#fff;  letter-spacing:1px; width:100%; max-width:645px; border-radius: 8px;
+    box-sizing: border-box;
+   
+    padding: 20px; }
+	
+	.thanx_msg .hi_txt { font-family: "AvenirLTStd-Roman"; font-size:20px; padding-bottom:10px; }
+	
+	.nm_txt { font-family: "AvenirLTStd-Light"; font-size:16px; line-height:23px; letter-spacing:1px; margin-top:6px; }
+	
+	.nm_txt + div, .txt_link div{ color: #666;
+    font-family: "AvenirLTStd-Roman";
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 19px;}
+	
+	.nm_txt + div, .txt_link span{ color: #666;
+    font-family: "AvenirLTStd-Roman";
+    font-size: 12px;
+    margin-top: 10px;}
+	
+	
+	
+	 div .cus_fname_val p { width: 100% !important; padding:0 !important}
+	 div .cus_order_val p { width: 100% !important; padding:0 !important}
+	 
+	 div .cus_fname_val ul,  div .cus_fname_val ol { padding-left:25px;}
+	 
+	 .desc_wrap span div, .notes_wrap span div   { font-size:14px;}
+	 
+	 .order_view_wrap p ul li, .desc_wrap ul li, .notes_wrap ul li, .order_view_wrap p ol li, .desc_wrap ol li, .notes_wrap ol li { font-size:14px;} 
+	 
+	 .table-striped.sticky-enabled th { width:12.5%; font-size:12px;}
+	 .table-striped.sticky-enabled th + th + th + th + th { width:19%;}
+	 
+	 .table-striped.sticky-enabled th + th + th + th + th + th { width:12%;}
+	 
+	 .table-striped.sticky-enabled th:last-child{ width:9%;}
+	 
+	 .table-striped.sticky-enabled th img { margin-top:-7px; margin-left:5px;}
+	 
+	 .orderlist_table_wrapper  { width:100%; display:inline-block; overflow:auto;}
+	 
+	 .orderlist_table_wrapper .sticky-header{ position:static !important}
+	 
+	 body.not-front .navbar-collapse ul li { margin:0 12px;}
+	 
+	 .page-user.page-user-order.not-front #main-content .container, body.page-user .container  { width:1010px;}
+	 
+	 body.page-user.sert_login.dashboard_exp .container, .page-admin.page-admin-payment .navbar-default.container { width:1010px;}
+	 
+	 .page-user.page-user-order.not-front .view_order_list { width:980px; padding-left:0px;}
+	 
+	 body.page-user-order-create.logged-in .header.container-fluid, body.page-admin-order.logged-in .header.container-fluid,  body.page-user-order-create .header.container-fluid, body.page-admin-payment .header.container-fluid, .page-howitworks.sert_login .header.container-fluid, .page-users-my-experiences.sert_login .header.container-fluid, .page-users-addexperience.sert_login .header.container-fluid, body.sert_login.dashboard_exp .header.container-fluid { height:67px !important}
+	 
+	 #order-checkout-form .form-item checkbox label{ cursor:default;}
+	 body.sert_login #site-logo { padding-left:0px !important;}
+
+	 
+	body.page-user-order .main-continent.main-content { margin:30px 0;}
+	
+	.page-user-order-create .form-type-textfield.form-item-currency.form-item.form-group { margin-bottom:0px;   }
+	.page-user-order-create #admin-order-form .form-item-country{ width:49%; margin-bottom:35px; clear:both;} 
+	.page-user-order-create #admin-order-form .form-item-country select { background: none repeat scroll 0 0 #f4f2e7;
+    border: medium none;
+    border-radius: 0;
+    box-shadow: none;
+    color: #4d4d4d;
+    cursor: default;
+    font-family: "AvenirLTStd-Light";
+    font-size: 16px;
+    height: 45px;
+    width: 99.9%; -webkit-appearance: value;
+   -moz-appearance:    value;
+   appearance:         value;}
+   
+   #admin-order-form .text-format-wrapper{ margin-bottom:35px;}
+	
+	.teammemberlogin a {
+		display:none !important;
+	}
+	@media (min-width:981px) and (max-width:1024px) {
+body.not-front.html .navbar-collapse.nav-rt { float:right !important;}}
+	
+@media (min-width:768px) and (max-width:980px){
+	
+	body .form-type-textfield.form-item-currency.form-item.form-group { margin-left:16px !important}
+	
+	body .container-inline-date label{ padding-left:0px; margin-left:0px !important;}
+
+body .container-inline-date #edit-payment-due-date { margin-left:0px !important; }
+body .container-inline-date { float:right;}
+
+.view_order_list { width:100% !important;}
+
+body.not-front .navbar-collapse.nav-rt.menu-sert-menu { float:right !important;}
+
+.page-admin-order #main-content .main-continent.main-content {
+    margin-left: 0;
+}
+body.page-user-order .form-type-textfield.form-item-currency.form-item.form-group{ margin-left:15px !important; margin-right:8px;}
+
+body.not-front .navbar-collapse.nav-rt { float:right !important}
+
+.page-admin-payment #order-search-form .form-item-order-search { width:100%;}
+
+body #edit-order-search { width:147px !important;}
+
+.verlay-exclude { font-size:15px !important; margin-left:5px !important; height:27px !important}
+.page-admin-payment #order-search-form button#edit-submit{ font-size:15px !important;}
+#edit-reset.form-submit{ font-size:15px !important; margin-left:2px !important}
+}
+
+@media (max-width:767px){
+	
+	.right-bottom-navi .welcome_wrapper p { margin-bottom:15px;}
+		.page-user-order-create #admin-order-form .form-item-country{ width:100%; clear:both;} 
+		.page-user.page-user-order.not-front .view_order_list { padding-left:20px;}
+		.page-user-order-create #admin-order-form .form-item-country label { margin-bottom:8px;} 
+		
+		 body.page-user-order-create.logged-in .header.container-fluid, body.page-admin-order.logged-in .header.container-fluid, body.page-user.logged-in .header.container-fluid, body.page-node-220.logged-in  .header.container-fluid { height:auto !important}
+ 
+	
+.page-checkout .block-awsdms-payment #order_details, .page-checkout .block-awsdms-payment .checkout_form { padding:15px;}
+
+.page-checkout .block-awsdms-payment #order_details div { padding-left:0px; padding-right:0px;}
+
+.page-checkout .block-awsdms-payment #order_details div span:first-child { font-size:13px; width:100%; margin-bottom:4px;}
+
+.page-checkout .block-awsdms-payment #order_details div span:last-child { width:100%; font-size:13px;}
+
+.page-checkout .block-awsdms-payment h4 { text-align:center; font-size:22px;}
+
+.page-checkout .block-awsdms-payment .checkout_form .form-item-fname, .page-checkout .block-awsdms-payment .checkout_form .form-item-lname, .page-checkout .block-awsdms-payment .checkout_form .form-item-city, .page-checkout .block-awsdms-payment .checkout_form .form-item-zip-code, .page-checkout .block-awsdms-payment .checkout_form .form-item-state, .form-item-state, .page-checkout .block-awsdms-payment .checkout_form .form-item-country { width:100%;}
+
+.page-checkout .block-awsdms-payment .checkout_form label { margin-bottom:7px;}
+
+.page-checkout .main-continent.main-content { padding:0 10px; }
+
+.page-checkout .block-awsdms-payment .static_content h3 { font-size:24px;}
+.page-checkout .block-awsdms-payment .static_content { font-size:19px;}
+
+.navbar-toggle { display:none;}
+
+body.not-front.page-checkout .header { height:auto;}
+
+.page-user-order-create .right-bottom-navi form#admin-order-form .form-type-textfield { width:100%;}
+
+body .form-type-textfield.form-item-currency.form-item.form-group {
+margin-left: 15px !important;
+width: 31%!important;
+margin-right: 0px; float: right!important;
+}
+
+body .form-type-textfield.form-item-price.form-item.form-group {
+width: 62% !important;
+}
+
+body .container-inline-date { width:100% !important;}
+	
+body .container-inline-date label{ padding-left:0px; margin-left:0px !important;}
+
+body .container-inline-date #edit-payment-due-date { margin-left:0px !important; }
+
+.page-user-order-create .right-bottom-navi form#admin-order-form button#edit-submit {
+left: 42%;
+bottom: -41px;
+
+}
+
+body.not-front .container { width:100% !important; }	
+.view_order_list { width:100% !important;}
+
+.page-admin-order #main-content .main-continent.main-content {
+    margin-left: 0;
+}
+body .bk_btn { padding-right:15px;}
+body .order_view_wrap { padding-right:15px;}
+
+.navbar-toggle {
+    display: block;
+}
+
+body .container-fluid .menu-sert-menu  { width:100%;}
+body .container-fluid .menu-sert-menu  ul li { margin:0px !important;padding:0px !important;}
+body .order_view_wrap {
+    padding-right: 0;
+}
+.order_view_wrap p, .desc_wrap, .notes_wrap { width:100% !important;}
+
+#order-checkout-form .form-submit{ width:100%;}
+
+body.not-front .nav-rt.in .menu.nav, body.not-front .nav-rt.collapsing .menu.nav { display:block !important;}
+
+.page-user-order-create .right-bottom-navi form#admin-order-form .form-type-textfield { height:auto;}
+
+.page-user-order-create .right-bottom-navi form#admin-order-form { padding:15px;}
+
+.page-admin-payment #order-search-form button#edit-submit { float:left; margin-left:0 !important; font-size: 16px !important;}
+
+#edit-reset.form-submit{ float:left; font-size: 16px !important; margin-left:7px !important}
+
+.verlay-exclude{  float: left !important;
+    font-size: 16px;
+    height: auto;
+    margin-left: 7px;
+    padding: 5.9px 12px !important;  }
+
+.page-admin-payment #order-search-form .form-item-order-search label, .page-admin-payment #order-search-form .form-item-order-search input { width:100% !important;}
+
+body.page-admin-payment .menu-sert-menu .nav, body.not-front.page-admin-order .menu-sert-menu .nav  { margin-top:0px !important}
+
+body.not-front .navbar-collapse nav li > a { margin-left:13px !important;}
+
+body.not-front .navbar-collapse nav li > a.active-trail { border-bottom:none !important;}
+
+
+.right-bottom-navi.content  { padding:8px;}
+.front  .right-bottom-navi.content  { padding:0px;}
+
+.footer  .right-bottom-navi.content  { padding:0px;}
+
+
+body .view_order_list {  padding: 0 15px 14px;}
+
+.page-admin-order .order_view_wrap p .cus_fname, div .cus_fname {
+    font-size: 14px;
+    letter-spacing: 1px;
+    width: 31% !important;
+}
+
+.page-admin-order .order_view_wrap p .cus_fname_val, div .cus_fname_val {
+    text-transform: capitalize;
+    width: 45%;
+}
+
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	::i-block-chrome, .ui-datepicker .ui-datepicker-title select { padding-left:5px;}
+	
+	::i-block-chrome, #admin-order-form label{ font-family:'AvenirLTStd-Roman' !important;}
+	
+}
+
+
+
+/******code to hide editor fields***********/
+
+#cke_edit-descrpition-value #cke_10, #cke_8, #cke_48 , #cke_18, #cke_25 , #cke_64 , #cke_60 ,#cke_67 ,#cke_70  ,#cke_55 { display: none;}
+
+#cke_34 span + span + span + span {display: none;}
+#cke_41 span + span + span + span {display: none;}
+
+#cke_top_edit-extra-notes-value #cke_88, #cke_86, #cke_126 , #cke_84, #cke_88 , #cke_96 , #cke_103 ,#cke_133 ,#cke_138 ,#cke_142 ,#cke_145 ,#cke_148 { display: none;}
+
+#cke_112 span + span + span + span {display: none;}
+#cke_119 span + span + span + span {display: none;}
+
+
+
+
+
+.page-node-222 header .login_nav{ display:none !important;}
+
+#block-awsdms-payment-welcome{  position: relative;}
+#block-awsdms-payment-welcome .right-bottom-navi .welcome_wrapper { display:table-cell; vertical-align:middle;} 
+
+span.welcome_wrapper { display:block !important; margin-bottom:37px; font-size:25px !important;  }
+#block-awsdms-payment-welcome .right-bottom-navi{  width: 100%;
+  
+  overflow: auto;
+  margin: auto;
+  
+  top: 0px; left: 0; bottom: 0; right: 0; text-align:center; display:table; font-family:'AvenirLTStd-Roman' !important; font-size:16px; letter-spacing:0.5px; margin-top:20%; }
+    #block-awsdms-payment-welcome .right-bottom-navi p { display:inline-block;}
+  #block-awsdms-payment-welcome .right-bottom-navi p a { color:#fff; background:#0063b2; padding:7px 10px; border-radius:6px; margin-right:10px;   } 
+  
+    #block-awsdms-payment-welcome .right-bottom-navi p a:hover { text-decoration:none;}
+	
+	.page-node-220 .navbar-collapse.collapse.nav-rt, .page-node-220 .navbar-toggle { display:none !important;}
+	
+	body.sert_login #site-logo {
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+
+

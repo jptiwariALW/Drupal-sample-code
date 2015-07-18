@@ -1,0 +1,127 @@
+<?php
+/**
+ * @file
+ * Drupal installation file.
+ */
+/**
+ * Implements hook_schema().
+ */
+function aws_travel_contact_schema() {
+  $schema = array();
+  $schema['aws_travel_question'] = array(
+    'description' => 'Questions by the User',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary key for our table',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'user_name' => array(
+        'description' => 'User Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),
+      'email' => array(
+        'description' => 'Email',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),
+      'Question' => array(
+        'description' => 'User submitted question',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),   
+    ),
+    'primary key' => array('id'),
+  );
+  $schema['aws_travel_contact_details'] = array(
+    'description' => 'Contact detail when customer submit quries',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Primary key',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'email' => array(
+        'description' => 'Visitor Name',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),            
+      'first_name' => array(
+        'description' => 'User first name',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),            
+     'last_name' => array(
+        'description' => 'User last name',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),           
+      'postcode' => array(
+        'description' => 'User postcode',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),            
+      'phone_no' => array(
+        'description' => 'User phone',
+        'type' => 'varchar',
+        'length' => 255,
+        'default' => ''
+      ),
+      'country' => array(
+        'description' => 'User country',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+      'title' => array(
+        'description' => 'title',
+        'type' => 'varchar',
+        'length' => 255,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
+  return $schema;
+}
+
+
+
+/**
+* Implements hook_install().
+*/
+
+function aws_travel_contact_install() {
+  $new_vocab = (object) array(
+    'name' => 'Title',
+    'description' => 'This vocabulary has title (slutation)',
+    'machine_name' => 'title',
+  );
+  taxonomy_vocabulary_save($new_vocab);
+  
+  $vocab = taxonomy_vocabulary_machine_name_load('title');
+  $term1 = (object) array(
+   'name' => 'Mr',
+   'description' => 'Mr',
+   'vid' => $vocab->vid,
+  );
+  taxonomy_term_save($term1);
+}
+
+
+/**
+* Implements hook_uninstall().
+*/
+
+function aws_travel_contact_uninstall() {
+  $vocab = taxonomy_vocabulary_machine_name_load('title');
+  taxonomy_vocabulary_delete($vocab->vid);
+}

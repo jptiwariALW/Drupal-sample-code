@@ -1,0 +1,287 @@
+<?php
+/**
+ * @file
+ * Main Module file
+ */
+
+  /**
+ *  Defining macro's
+ */
+define('EMAIL_ADD', 'Notification email for paypal');
+define('PAYPAL_EMAIL_ADD', 'Paypal facilitator account email address');
+
+/**
+ * aws_order_management_menu().
+ * This function is used to create menu to manage orders
+ */
+function aws_order_management_menu() {
+  $items = array();
+  $items['admin/payment'] = array(
+    'title' => 'View Orders',
+    'description' => 'View Orders',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'order_list',
+    'access arguments' => array('aws order management module permission'),
+    'file' => 'includes/manage_order_admin.inc',
+  );
+   $items['admin/payment/export'] = array(
+    'title' => '',
+    'page callback' => 'order_export',
+    'page arguments' => array(3, 4),
+    'access arguments' => array('aws order management module permission'),
+    'type' => MENU_NORMAL_ITEM,
+    'file' => 'includes/manage_order_admin.inc',
+  );
+  $items['admin/payment/add'] = array(
+    'title' => 'Create Order',
+    'description' => 'Create new order',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('admin_order_form'),
+    'access arguments' => array('aws order management module permission'),
+    'file' => 'includes/manage_order_admin.inc',
+  );
+ $items['user/order/create'] = array(
+    'title' => 'Create Order',
+    'description' => 'Create Order',
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('admin_order_form', 2),
+    'access arguments' => array('aws order management module permission'),
+    'file' => 'includes/manage_order_admin.inc',
+  );
+  $items['checkout/%/cart'] = array(
+    'type' => MENU_NORMAL_ITEM,
+    'page callback' => 'drupal_get_form',
+    'access callback' => TRUE,
+  );
+  $items['result'] = array(
+    'page callback' => 'payment_success',
+    'access callback' => TRUE,
+    'type' => MENU_NORMAL_ITEM,
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function aws_order_management_block_info() {
+   $blocks['checkout_details'] = array(
+    'info' => t('Display Order Details'),
+    'cache' => DRUPAL_NO_CACHE, 
+   );
+   return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function aws_order_management_block_view($delta='') {
+  global $user;
+  $block = '';
+  $block['content'] = '';
+  switch ($delta) {   
+    case 'checkout_details':
+      $ref = arg(1);
+      $order_id = base64_decode($ref);
+      $currency = array('AUD' => "$", 'USD' => "$", 'NZD' => '$', 'CAD' => '$', 'EUR' => '&euro;' , 'GBP' => '£', 'ZAR' => '$', 'CHF' => '');
+      if ($order_id) {
+        $query = db_select('payment_order_table', 'ot');
+        $query->fields('ot')
+          ->condition('order_id', $ref);
+        $result = $query->execute()->fetchObject();
+        if ($result->order_status == '2') {
+          $options = array('query' => array('status' => 'EXPIRED', 'cn' => base64_encode($result->customer_name)));
+          drupal_goto('order-status', $options);
+        }
+      }
+      $html = '';
+      $html .= '<div class="static_content"><h3>' . t('SUBMIT YOUR PAYMENT') . '</h3></div>';
+      $html .= '<div id="order_details">';
+      $html .='<h4>' . t('ORDER DETAILS') . '</h4>';
+      $html .= '<div class="customer_name"><span class="name_cus">' . t('CUSTOMER NAME') . '</span><span class="name_value">' . $result->customer_name . '  ' . $result->customer_surname . '</span></div>';
+      $html .= '<div class="order_price"><span class="amt_cus">' . t('AMOUNT') . ' </span><span class="price_value">' . $currency[$result->currency] . $result->price . ' ' . $result->currency . '</span></div>';
+      $html .= '<div class="customer_order_id"><span class="or_id_cus">' . t('ORDER ID') . '</span><span class="id_value">' . $order_id . '</span></div>';
+      $html .= '<div class="product_name"><span class="name_pro">' . t('PRODUCT NAME') . '</span><span class="product_value">' . $result->product_name . '</span></div>';
+      $html .= '<div class="ordre_desciption"><span class="desc_cus">' . t('DESCRIPTION') . '</span><span class="desc_value">' . $result->description . '</span></div>';
+      $html .= '<div class="order_notes"><span class="notes_cus">' . t('EXTRA NOTES') . '</span><span class="notes_value">' . $result->extra_notes . '</span></div>';
+      $html .= '<div class="order_due_date"><span class="due_date_cus">' . t('PAYMENT DUE DATE') . '</span><span>' . format_date($result->payment_due_date, 'custom', 'dS F Y') . '</span></div>';
+      $html .= '</div>';
+      $html .= '<div class="checkout_form">' . render(drupal_get_form('order_checkout_form', $result)) . '</div>';
+      $block['content'] = $html;
+      return $block;
+    }
+}
+
+/**
+ * Function is user for ckeckout form render.
+ */
+function order_checkout_form($form, &$form_state, $result) {
+  include_once DRUPAL_ROOT . '/includes/locale.inc';
+  $countries = country_get_list();
+  $form['checkout'] = array(
+    '#type' => 'markup',
+    '#prefix' => '<div id="form_txt">',
+    '#suffix' => '</div>',
+    '#markup' => '<h4>' . t('BILLING ADDRESS') . '</h4>',
+  );
+  $form['order_id'] = array(
+    '#title' => t('id:-'),
+    '#type' => 'hidden',
+    '#default_value' => isset($result->order_id) ? $result->order_id : '',
+   );
+  $form['order_desc'] = array(
+    '#title' => t('id:-'),
+    '#type' => 'hidden',
+    '#default_value' => isset($result->description) ? $result->description : '',
+   );
+  $form['order_price'] = array(
+    '#title' => t('id:-'),
+    '#type' => 'hidden',
+    '#default_value' => isset($result->price) ? $result->price : '',
+   );
+   $form['order_currency'] = array(
+    '#title' => t('id:-'),
+    '#type' => 'hidden',
+    '#default_value' => isset($result->currency) ? $result->currency : '',
+   );
+  $form['fname'] = array(
+    '#title' => t('FIRST NAME'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+    '#default_value' => isset($result->customer_name) ? $result->customer_name : '',
+  );
+  $form['lname'] = array(
+    '#title' => t('LAST NAME'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+     '#maxlength' => 255,
+    '#default_value' => isset($result->customer_surname) ? $result->customer_surname : '',
+  );
+  $form['email'] = array(
+    '#title' => t('EMAIL ADDRESS'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+    '#default_value' => isset($result->customer_email) ? $result->customer_email : '',
+  );
+  $form['street_add'] = array(
+    '#title' => t('STREET ADDRESS'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+  );
+  $form['city'] = array(
+    '#title' => t('CITY'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+  );
+  $form['zip_code'] = array(
+    '#title' => t('ZIP CODE'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+  );
+  $form['state'] = array(
+    '#title' => t('STATE'),
+    '#type' => 'textfield',
+    '#required' => TRUE,
+    '#maxlength' => 255,
+  );
+  $form['country'] = array(
+    '#title' => t('COUNTRY'),
+    '#type' => 'select',
+    '#options' => $countries,
+    '#default_value' => 'AU',
+  );
+  $form['term_of_use'] = array(
+    //'#title' => t('Agree to terms and conditions'),
+    '#title' => t('Agree to terms and conditions'),
+    '#type' => 'checkbox',
+  );
+  $form['submit'] = array(
+    '#value' => 'SUBMIT PAYMENT DETAILS',
+    '#type' => 'submit',
+    '#submit' => array('order_checkout_form_submit')
+  );
+  return $form;
+}
+
+/**
+ * Submit Handler for order checkout form.
+ */
+function order_checkout_form_submit($form, &$form_state) {
+    require_once("includes/paypal_class.php");
+   $p = new paypal_class();
+   $p->admin_mail = EMAIL_ADD;
+   $this_script = 'http://'.$_SERVER['HTTP_HOST'];
+   // Call the facilitator eaccount.
+   $p->add_field('business', PAYPAL_EMAIL_ADD);
+   $p->add_field('upload', '1');
+   $p->add_field('cmd', '_cart');
+   // Return URL after the transaction got over.
+   $p->add_field('return', $this_script.'/result');
+   // Cancel URL if the trasaction was cancelled during half of the transaction.
+   $p->add_field('cancel_return', $this_script.'/cancel');
+   $p->add_field('currency_code', 'USD');
+   $p->add_field('invoice', $form_state['values']['order_id']);
+   $p->add_field('item_name_1', 'Test');
+   $p->add_field('item_number_1', $form_state['values']['order_id']);
+   $p->add_field('quantity_1', 1);
+   $p->add_field('amount_1', $form_state['values']['order_price']);
+   $p->add_field('first_name', $form_state['values']['fname']);
+   $p->add_field('last_name', $form_state['values']['lname']);
+   $p->add_field('address1', $form_state['values']['street_add']);
+   $p->add_field('city', $form_state['values']['city']);
+   $p->add_field('state', $form_state['values']['state']);
+   $p->add_field('country', $form_state['values']['country']);
+   $p->add_field('zip', $form_state['values']['zip_code']);
+   $p->add_field('email', $form_state['values']['email']);
+   $p->submit_paypal_post(); // POST it to paypal
+   "<form method=\"post\" name=\"paypal_form\" ";
+    "action=\"".$paypal_url."\">\n";
+	if (isset($this->paypal_mail))echo "<input type=\"hidden\" name=\"business\" value=\"$this->paypal_mail\"/>\n";
+	  foreach ($this->fields as $name => $value) {
+		"<input type=\"hidden\" name=\"$name\" value=\"$value\"/>\n";
+	  }
+	  "<center><br/><br/>If you are not automatically redirected to ";
+	  "paypal within 5 seconds...<br/><br/>\n";
+	  "<input type=\"submit\" value=\"Click Here\"></center>\n";
+	  "</form>\n";
+}
+
+/**
+ * Callback function for payment success.
+ */
+function payment_success() {
+   drupal_set_message(t('Payment Done successfully.'));
+   drupal_goto('/');
+}
+
+/**
+ * Implements hook_init().
+ */
+function aws_order_management_init() {
+ drupal_add_js(drupal_get_path('module', 'aws_order_management') . '/js/payment.js');
+}
+
+/**
+ * Implements hook_mail().
+ */
+function aws_order_management_mail($key = '', &$message, $params) {
+  $headers = array(
+    'MIME-Version' => '1.0',
+    'Content-Type' => 'text/html; charset=iso-8859-1; format=flowed',
+    'Content-Transfer-Encoding' => '8Bit',
+    'X-Mailer' => 'Drupal',
+  );
+  foreach ($headers as $key => $value) {
+    $message['headers'][$key] = $value;
+  }
+  $message['subject'] = $params['subject'];
+  //The email body is here, inside the $message array.
+  $message['body'][] = $params['message'];
+}
